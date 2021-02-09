@@ -126,7 +126,8 @@ def callback():
 
 @app.route('/logout')
 def logout():
-    session.pop('access_token')
+    if 'access_token' in session:
+        session.pop('access_token')
     return "You've logged out"
 
 
