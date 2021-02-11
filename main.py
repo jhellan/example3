@@ -54,6 +54,15 @@ def get_code():
     return flask.redirect(authzpoint + '?' + urllib.parse.urlencode(params))
 
 
+def check_authz_error():
+    error = flask.request.args.get('error')
+    if not error:
+        return
+    error_description = flask.request.args.get('error_description')
+    message = f'Error from authorization endpoint: {error}, {error_description}'
+    raise RuntimeError(message)
+
+
 def get_token():
     tokenpoint = oidcconfig['token_endpoint']
     code = flask.request.args.get('code')
@@ -120,6 +129,7 @@ def login():
 @app.route('/redirect_uri')
 def callback():
     logger.info('callback received')
+    check_authz_error()
     get_token()
     return flask.redirect('/')
 
